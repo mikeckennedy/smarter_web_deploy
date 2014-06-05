@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Security;
 using System.Text;
@@ -19,6 +20,14 @@ namespace SmarterWebDeploy
 		private const string appOfflineDestFile = "app_offline.htm";
 		private static string redirectUrl;
 		private static string verificationKey;
+
+		public static List<string> NonRestartingFileTypes = new List<string>(new[]
+		{
+			".txt", ".jpg", ".png", ".gif", ".ico", // images
+			".cshtml", ".vbhtml", ".htm", ".html", // html
+			".eot", ".svg", ".ttf", ".woff", // fonts
+		});
+
 		public static bool HasInitialized { get; private set; }
 
 		public static void Init()
@@ -92,29 +101,41 @@ namespace SmarterWebDeploy
 			RemoveOldDeployLogFile();
 
 			// TODO: if only cshtml, png, jpg, gif, keep online
+			bool canUpdateWhileOnline = CheckCanUpdateWhileOnline(list);
+			if (canUpdateWhileOnline)
+			{
+				Write(output, logStream, "Good news: All pending file changes can be made while app is online ...");	
+			}
 
-			// 3. Copy app offline to disable new incoming requests temporarily.
-			Write(output, logStream,
-				"Setting application to offline state (<a target='_blank' href='" + redirectUrl + "'>" + redirectUrl + "</a>)");
+			string finalAppOfflineDestFile = null;
+			if (!canUpdateWhileOnline)
+			{
+				// 3. Copy app offline to disable new incoming requests temporarily.
+				Write(output, logStream,
+					"Setting application to offline state (<a target='_blank' href='" + redirectUrl + "'>" + redirectUrl + "</a>)");
 
-			string finalAppOfflineDestFile = Path.Combine(toBaseFolder, appOfflineDestFile);
-			string finalAppOfflineSourceFile = Path.Combine(fromBaseFolder, appOfflineSourceFile);
+				finalAppOfflineDestFile = Path.Combine(toBaseFolder, appOfflineDestFile);
+				string finalAppOfflineSourceFile = Path.Combine(fromBaseFolder, appOfflineSourceFile);
 
-			File.Copy(finalAppOfflineSourceFile, finalAppOfflineDestFile, true);
+				File.Copy(finalAppOfflineSourceFile, finalAppOfflineDestFile, true);
+			}
 
-			// 4. Wait a few seconds for any pending requests to complete before splashing the app domain.
-			Write(output, logStream, "Waiting 2 seconds for pending requests (if any) to complete ...");
-			Thread.Sleep(1980);
+			if (!canUpdateWhileOnline)
+			{
+				// 4. Wait a few seconds for any pending requests to complete before splashing the app domain.
+				Write(output, logStream, "Waiting 2 seconds for pending requests (if any) to complete ...");
+				Thread.Sleep(1980);
+			}
 
 			try
 			{
-				// 5. Copy all files (consider deleting dest folder first?)
+				// 5. Copy all files (consider deleting files not in source but in dest folder first?)
 				Write(output, logStream, "Copying files to destination site ...");
 				int copiedCount = 0;
 				FileUtilities.FileCopied += file => copiedCount++;
 				FileUtilities.FileCopied += file => Write(output, logStream, "File copied: " + file);
 
-				Write(output, logStream, "Running " + list.Count + " file operations...");
+				Write(output, logStream, "Running " + list.Count + " file and directory operations...");
 				FileUtilities.FinalizeCopy(list);
 
 				Write(output, logStream, "Copied " + copiedCount + " files successfully.");
@@ -128,10 +149,13 @@ namespace SmarterWebDeploy
 			Write(output, logStream, "Waiting for final changes to be detected ...");
 			Thread.Sleep(500);
 
-			// 7. Delete app offline
-			Write(output, logStream, "Removing application offline status ...");
-			File.Delete(finalAppOfflineDestFile);
-			Thread.Sleep(100);
+			if (!string.IsNullOrWhiteSpace(finalAppOfflineDestFile))
+			{
+				// 7. Delete app offline
+				Write(output, logStream, "Removing application offline status ...");
+				File.Delete(finalAppOfflineDestFile);
+				Thread.Sleep(100);
+			}
 
 			bool? verified = null;
 			if (!string.IsNullOrWhiteSpace(redirectUrl))
@@ -150,6 +174,19 @@ namespace SmarterWebDeploy
 			SaveDeployLogFile(logStream.ToString());
 
 			return redirectUrl;
+		}
+
+		private static bool CheckCanUpdateWhileOnline(IEnumerable<PendingCopy> list)
+		{
+			var onlineTypes = DeployManager.NonRestartingFileTypes;
+
+			var filesRequiringOfflineMode =
+				from fc in list.OfType<FileCopy>()
+				let ext = Path.GetExtension(fc.DestinationFile)
+				where ext == null || !onlineTypes.Contains(ext.ToLower().Trim())
+				select fc;
+
+			return !filesRequiringOfflineMode.Any();
 		}
 
 		private static bool VerifySiteDeploy(StreamWriter output, StringWriter logStream)
