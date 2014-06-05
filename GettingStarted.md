@@ -11,8 +11,8 @@ You may want to watch the quick intro video to see the moving parts before you t
 
 There are a few steps required to configure your app. 
 
-# Add a reference to `SmarterWebDeploy.dll`.
-# Add the required fields to your web.config file (see below)
+1. Add a reference to `SmarterWebDeploy.dll`.
+1. Add the required fields to your web.config file (see below)
 
 
 **web.config settings**
