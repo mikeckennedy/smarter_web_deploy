@@ -154,7 +154,7 @@ namespace SmarterWebDeploy
 
 		private static bool VerifySiteDeploy(StreamWriter output, StringWriter logStream)
 		{
-			Write(output, logStream, "Requesting page at " + redirectUrl + ", starting site and verifying dpeloy ...");
+			Write(output, logStream, "Requesting page at " + redirectUrl + ", starting site and verifying deploy ...");
 			try
 			{
 				WebClient client = new WebClient();
