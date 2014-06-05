@@ -3,17 +3,12 @@ Getting Started with Smarter Web Deploy
 
 Getting started is quick and easy provided you already have [Web Deploy](http://www.iis.net/downloads/microsoft/web-deploy) configured on your server (follow Microsoft's documentation to install it).
 
-You may want to watch the quick intro video to see the moving parts before you try it yourself.
-
-    [link to video]
-
 **Part 1 - Configuring your app**
 
 There are a few steps required to configure your app. 
 
 1. Add a reference to `SmarterWebDeploy.dll`.
 1. Add the required fields to your web.config file (see below)
-
 
 **web.config settings**
 
@@ -45,7 +40,7 @@ You will need to create two websites in IIS.
 * Your live site. E.g. http://blog.michaelckennedy.net
 * A non-public deployment site. E.g. http://deployblog.michaelckennedy.net
 
-The user account running your deployment site must have read / write permissions to the folders holding your live site. Put a sample ASP.NET website in each of these and make sure they load correctly in a browser. This is just basic hosting, nothing about smarter web deploy is tested yet.
+The user account running your deployment site must have read / write permissions to the folders holding your live site. Put a sample ASP.NET website in each of these and make sure they load correctly in a browser. This is just basic hosting. Nothing about smarter web deploy is tested yet.
 
 **Part 3 - Publishing to your live site**
 
@@ -73,7 +68,7 @@ Here is a screenshot of something along these lines:
 
 Check that everything is setup by validating the connection. 
 
-Click 'Finish' to publish your site. It should load the deployment site which then locally runs the deploy to produciton on the server.
+Click 'Publish' to publish your site. It should load the deployment site which then locally runs the deploy to produciton on the server.
 
 Welcome to a better way to publish your website to IIS.
 
