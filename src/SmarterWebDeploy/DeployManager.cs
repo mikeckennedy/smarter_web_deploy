@@ -83,7 +83,8 @@ namespace SmarterWebDeploy
 
 			if (list.Count == 0)
 			{
-				Write(output, logStream, "There are no file changes to deploy. Deploy cancelled and application is still online (unchanged).");
+				Write(output, logStream,
+					"There are no file changes to deploy. Deploy cancelled and application is still online (unchanged).");
 				SaveDeployLogFile(logStream.ToString());
 				return redirectUrl;
 			}
@@ -93,11 +94,12 @@ namespace SmarterWebDeploy
 			// TODO: if only cshtml, png, jpg, gif, keep online
 
 			// 3. Copy app offline to disable new incoming requests temporarily.
-			Write(output, logStream, "Setting application to offline state (<a target='_blank' href='" + redirectUrl + "'>" + redirectUrl + "</a>)");
+			Write(output, logStream,
+				"Setting application to offline state (<a target='_blank' href='" + redirectUrl + "'>" + redirectUrl + "</a>)");
 
 			string finalAppOfflineDestFile = Path.Combine(toBaseFolder, appOfflineDestFile);
 			string finalAppOfflineSourceFile = Path.Combine(fromBaseFolder, appOfflineSourceFile);
-			
+
 			File.Copy(finalAppOfflineSourceFile, finalAppOfflineDestFile, true);
 
 			// 4. Wait a few seconds for any pending requests to complete before splashing the app domain.
@@ -125,7 +127,7 @@ namespace SmarterWebDeploy
 			// 6. Wait 1 second for all file modifications to be detected.
 			Write(output, logStream, "Waiting for final changes to be detected ...");
 			Thread.Sleep(500);
-			
+
 			// 7. Delete app offline
 			Write(output, logStream, "Removing application offline status ...");
 			File.Delete(finalAppOfflineDestFile);
@@ -140,32 +142,38 @@ namespace SmarterWebDeploy
 			if (verified == null || verified == true)
 			{
 				// 8. Back online.
-				Write(output, logStream, string.Format("Smart deploy successful. Visit this link to view the page: <a target='_blank' href='" + redirectUrl + "'>" + redirectUrl + "</a>"));	
+				Write(output, logStream,
+					string.Format("Smart deploy successful. Visit this link to view the page: <a target='_blank' href='" + redirectUrl +
+					              "'>" + redirectUrl + "</a>"));
 			}
-			
+
 			SaveDeployLogFile(logStream.ToString());
 
 			return redirectUrl;
 		}
 
-		private static bool VerifySiteDeploy( StreamWriter output, StringWriter logStream) 
+		private static bool VerifySiteDeploy(StreamWriter output, StringWriter logStream)
 		{
 			Write(output, logStream, "Requesting page at " + redirectUrl + ", starting site and verifying dpeloy ...");
 			try
 			{
-				WebClient client = new WebClient(); 
+				WebClient client = new WebClient();
 				string data = client.DownloadString(redirectUrl);
 
-				Write(output, logStream, "Site started <strong style='color: darkgreen'>SUCCESSFULLY, " + data.Length.ToString("N0") + " characters returned.</strong>");
+				Write(output, logStream,
+					"Site started <strong style='color: darkgreen'>SUCCESSFULLY, " + data.Length.ToString("N0") +
+					" characters returned.</strong>");
 				return true;
 			}
 			catch (WebException x)
 			{
-				Write(output, logStream, "<strong style='color: red'>ERROR: Site failed: Status=" + x.Status + ", Message=" + x.Message + "</strong>");
+				Write(output, logStream,
+					"<strong style='color: red'>ERROR: Site failed: Status=" + x.Status + ", Message=" + x.Message + "</strong>");
 			}
 			catch (Exception x)
 			{
-				Write(output, logStream, "<strong style='color: darkgreen'>ERROR: Unknown error requesting page: " + x.Message + "</strong>");
+				Write(output, logStream,
+					"<strong style='color: darkgreen'>ERROR: Unknown error requesting page: " + x.Message + "</strong>");
 			}
 			return false;
 		}
@@ -202,13 +210,15 @@ namespace SmarterWebDeploy
 		{
 			if (string.IsNullOrEmpty(folderValue))
 			{
-				throw new ConfigurationErrorsException("Smart deploy cannot initialize, the " + folderSettingName + " app setting is missing.");
+				throw new ConfigurationErrorsException("Smart deploy cannot initialize, the " + folderSettingName +
+				                                       " app setting is missing.");
 			}
 
 			if (!Directory.Exists(folderValue))
 			{
 				throw new ConfigurationErrorsException(
-					"Smart deploy cannot initialize, the " + folderSettingName + " specified folder does not exist or is inaccessible: folder = " +
+					"Smart deploy cannot initialize, the " + folderSettingName +
+					" specified folder does not exist or is inaccessible: folder = " +
 					folderValue);
 			}
 			return folderValue;
@@ -218,7 +228,8 @@ namespace SmarterWebDeploy
 		{
 			if (string.IsNullOrEmpty(fileValue))
 			{
-				throw new ConfigurationErrorsException("Smart deploy cannot initialize, the " + fileSettingName + " app setting is missing.");
+				throw new ConfigurationErrorsException("Smart deploy cannot initialize, the " + fileSettingName +
+				                                       " app setting is missing.");
 			}
 
 			if (!Path.IsPathRooted(fileValue))
@@ -230,7 +241,8 @@ namespace SmarterWebDeploy
 			if (!File.Exists(fileValue))
 			{
 				throw new ConfigurationErrorsException(
-					"Smart deploy cannot initialize, the " + fileSettingName + " specified file does not exist or is inaccessible: file = " +
+					"Smart deploy cannot initialize, the " + fileSettingName +
+					" specified file does not exist or is inaccessible: file = " +
 					fileValue);
 			}
 			return fileValue;
