@@ -18,7 +18,7 @@ namespace SmarterWebDeploy
 				Response.BufferOutput = false;
 				DeployManager.Deploy(id, Response.OutputStream);
 
-				return Content("Completed successfully.");
+				return Content("Done.");
 			}
 			catch (Exception x)
 			{

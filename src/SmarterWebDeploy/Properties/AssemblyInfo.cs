@@ -7,7 +7,7 @@ using SmarterWebDeploy.Properties;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Smarter Web Deploy")]
-[assembly: AssemblyCopyright("Copyright © Michael Kennedy 2013")]
+[assembly: AssemblyCopyright("Copyright © Michael Kennedy 2013-2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
@@ -17,6 +17,6 @@ namespace SmarterWebDeploy.Properties
 {
 	internal class AssemblyDetails
 	{
-		public const string Version = "1.0.1.6";
+		public const string Version = "1.0.1.7";
 	}
 }

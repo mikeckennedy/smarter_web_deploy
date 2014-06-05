@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Security;
 using System.Text;
 using System.Threading;
@@ -130,12 +131,43 @@ namespace SmarterWebDeploy
 			File.Delete(finalAppOfflineDestFile);
 			Thread.Sleep(100);
 
-			// 8. Back online.
-			Write(output, logStream, string.Format("Smart deploy successful. Visit this link to view the page: <a target='_blank' href='" + redirectUrl + "'>" + redirectUrl + "</a>"));
+			bool? verified = null;
+			if (!string.IsNullOrWhiteSpace(redirectUrl))
+			{
+				verified = VerifySiteDeploy(output, logStream);
+			}
+
+			if (verified == null || verified == true)
+			{
+				// 8. Back online.
+				Write(output, logStream, string.Format("Smart deploy successful. Visit this link to view the page: <a target='_blank' href='" + redirectUrl + "'>" + redirectUrl + "</a>"));	
+			}
 			
 			SaveDeployLogFile(logStream.ToString());
 
 			return redirectUrl;
+		}
+
+		private static bool VerifySiteDeploy( StreamWriter output, StringWriter logStream) 
+		{
+			Write(output, logStream, "Requesting page at " + redirectUrl + ", starting site and verifying dpeloy ...");
+			try
+			{
+				WebClient client = new WebClient(); 
+				string data = client.DownloadString(redirectUrl);
+
+				Write(output, logStream, "Site started <strong style='color: darkgreen'>SUCCESSFULLY, " + data.Length.ToString("N0") + " characters returned.</strong>");
+				return true;
+			}
+			catch (WebException x)
+			{
+				Write(output, logStream, "<strong style='color: red'>ERROR: Site failed: Status=" + x.Status + ", Message=" + x.Message + "</strong>");
+			}
+			catch (Exception x)
+			{
+				Write(output, logStream, "<strong style='color: darkgreen'>ERROR: Unknown error requesting page: " + x.Message + "</strong>");
+			}
+			return false;
 		}
 
 		private static void SaveDeployLogFile(string logText)
