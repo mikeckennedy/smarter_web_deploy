@@ -71,7 +71,14 @@ Here is a screenshot of something along these lines:
 
 ![Screen shot](https://raw.githubusercontent.com/mikeckennedy/smarter_web_deploy/master/docs/screenshots/WebPublishConnection.png)
 
+Check that everything is setup by validating the connection. 
 
+Click 'Finish' to publish your site. It should load the deployment site which then locally runs the deploy to produciton on the server.
+
+Welcome to a better way to publish your website to IIS.
+
+-------------------------------------
+Guide written by [@mkennedy](https://twitter.com/mkennedy). Contributions to the project are welcome.
 
 
 
