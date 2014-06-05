@@ -1,7 +1,7 @@
 Smarter Web Deploy
 ==================
 
-A library to extend Microsoft's Web Deploy feature in Visual Studio to create reliable and fast deploys on production sites while online without adversely affecting users.
+A library to extend [Microsoft's Web Deploy](http://www.iis.net/downloads/microsoft/web-deploy) feature in Visual Studio to create reliable and fast deploys on production sites while online without adversely affecting users.
 
 **Quick start**: Check out our [Getting Started Guide](https://github.com/mikeckennedy/smarter_web_deploy/blob/master/GettingStarted.md).
 
