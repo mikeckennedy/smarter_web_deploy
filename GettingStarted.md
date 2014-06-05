@@ -7,8 +7,7 @@ You may want to watch the quick intro video to see the moving parts before you t
 
     [link to video]
 
-Part 1 - Configuring your app
-==================
+**Part 1 - Configuring your app**
 
 There are a few steps required to configure your app. 
 
@@ -35,5 +34,4 @@ There are a few steps required to configure your app.
           <!-- ... -->
      </configuration>
 
-Part 2 - Configuring your server
-==================
+**Part 2 - Configuring your server**
