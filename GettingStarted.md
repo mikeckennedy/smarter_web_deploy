@@ -25,6 +25,7 @@ There are a few steps required to configure your app.
               <!-- toBaseFolder: Full path to actual live site. -->
               <add key="toBaseFolder" value="D:\Programming\GitHub\smarter_web_deploy\src\DestinationWebsiteForTesting\" />
               <!-- appOfflineSourceFile: Relative path to offline html file in deployment site. -->
+              <!-- This is the HTML that will be shown while your site is offline (rather than crashing during upgrade). -->
               <add key="appOfflineSourceFile" value="xappoffline.htm" />
               <!-- redirectUrl: Home page of live site. -->
               <add key="redirectUrl" value="http://localhost:26555/" />
