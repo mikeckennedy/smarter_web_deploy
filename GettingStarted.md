@@ -55,4 +55,24 @@ Finally, configure Visual Studio to publish to **the deployment site** not the l
 3. This triggers smart deploy.
 4. It will locally deploy to the live site and test the deployment.
 
+Start by right-clicking your production web app in Visual Studio's solution explorer. Choose "Publish...".
+
+Create a new custom profile (if you don't have one already).
+
+In the connection settings, enter the following:
+
+1. Server: Your server hosting both sites.
+2. Site name: Your **deployment** site.
+3. User / password: Your publish user credentials.
+4. The URL to the action /deploy/complete/{securitykey} (e.g. `http://deployblog.michaelckennedy.net/deploy/complete/547bbf02-7469-4606-8960-21e3e5af74bd`)
+
+Here is a screenshot of something along these lines:
+
+![Screen shot](https://raw.githubusercontent.com/mikeckennedy/smarter_web_deploy/master/docs/screenshots/WebPublishConnection.png)
+
+
+
+
+
+
 
