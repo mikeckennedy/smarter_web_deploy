@@ -3,7 +3,7 @@ Smarter Web Deploy
 
 A library to extend Microsoft's Web Deploy feature in Visual Studio to create reliable and fast deploys on production sites while online without adversely affecting users.
 
-**Quick start**: Check out our (Getting Started Guide)[https://github.com/mikeckennedy/smarter_web_deploy/blob/master/GettingStarted.md].
+**Quick start**: Check out our [Getting Started Guide](https://github.com/mikeckennedy/smarter_web_deploy/blob/master/GettingStarted.md).
 
 Rather than uploading directly into a live site (which can break during slow uploads or requests in the middle of a transfer), a second non public site is used to publish into. Then smart deploy compares the files on the server using hashs rather than time stamps. If the site has changes, it will be gracefully taken offline, files moved over, and then it will be brought back online.
 
